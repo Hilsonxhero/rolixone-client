@@ -42,6 +42,7 @@ const form = ref({
     status: null,
     type: null,
     validation_address: null,
+    icon: null
 });
 const route = useRoute();
 
@@ -62,20 +63,22 @@ const types = ref([
 const handleSubmit = async () => {
     try {
         loader.value = true;
-        const formData = {
-            name: form.value.name,
-            symbol: form.value.symbol,
-            network: form.value.network,
-            min_withdraw: form.value.min_withdraw,
-            max_withdraw: form.value.max_withdraw,
-            min_deposit: form.value.min_deposit,
-            max_deposit: form.value.max_deposit,
-            status: form.value.status,
-            type: form.value.type,
-            validation_address: form.value.validation_address,
-            can_withdraw: form.value.can_withdraw,
-            can_deposit: form.value.can_deposit,
-        };
+        const formData = new FormData();
+
+        formData.append('name', form.value.name);
+        formData.append('symbol', form.value.symbol);
+        formData.append('network', form.value.network);
+        formData.append('min_withdraw', form.value.min_withdraw);
+        formData.append('max_withdraw', form.value.max_withdraw);
+        formData.append('min_deposit', form.value.min_deposit);
+        formData.append('max_deposit', form.value.max_deposit);
+        formData.append('status', form.value.status);
+        formData.append('type', form.value.type);
+        formData.append('validation_address', form.value.validation_address);
+        formData.append('can_withdraw', form.value.can_withdraw ? 1 : 0);
+        formData.append('can_deposit', form.value.can_deposit ? 1 : 0);
+        formData.append('icon', form.value.icon);
+
         const { data } = await ApiService.post(`management/assets`, formData);
 
         if (data.status == "200") {
@@ -226,6 +229,20 @@ onMounted(async () => {
                                         <ErrorMessage name="type" />
                                     </div>
                                 </div>
+
+
+
+
+                                <div class="col-span-12">
+
+                                    <v-file-input density="compact" accept="image/*" label="Asset Icon"
+                                        v-model="form.icon"></v-file-input>
+                                    <div class="invalid-feedback d-block">
+                                        <ErrorMessage name="icon" />
+                                    </div>
+
+                                </div>
+
 
                                 <div class="col-span-12">
                                     <div class="d-flex align-center">
