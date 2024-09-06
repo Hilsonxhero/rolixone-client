@@ -116,3 +116,12 @@
 .rounded-md {
     border-radius: 12px !important;
 }
+
+.invalid-feedback {
+    color: red;
+    padding-top: 0.4rem;
+}
+
+.v-data-table-header__content span {
+    white-space: nowrap;
+}

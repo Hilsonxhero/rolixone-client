@@ -12,6 +12,7 @@ import 'vue3-carousel/dist/carousel.css';
 //Mock Api data
 import './_mockApis';
 
+import { initVeeValidate } from "@/core/plugin/vee-validate";
 
 import Maska from 'maska';
 
@@ -40,6 +41,8 @@ app.use(createPinia());
 
 app.use(VueTablerIcons);
 app.use(i18n);
+initVeeValidate()
+
 app.use(Maska);
 app.use(VueApexCharts);
 app.use(vuetify).mount('#app');

@@ -15,43 +15,52 @@
 
                             <div>
 
-                                <v-btn :to="{ name: 'management-users-create' }" class="me-2 text-none" flat
+                                <v-btn :to="{ name: 'management-pairs-create' }" class="me-2 text-none" flat
                                     color="primary" prepend-icon="mdi-plus" variant="flat">
-                                    Create User
+                                    Create Asset Pair
                                 </v-btn>
                             </div>
                         </div>
                     </template>
-                    <template v-slot:item.role="{ value }">
+                    <template v-slot:item.from="{ item }">
                         <div>
-                            <template v-if="value">
-                                <v-chip> {{ value?.title }} </v-chip>
-                            </template>
-                            <template v-else>
-                                <v-chip color="warning"> - </v-chip>
-                            </template>
+                            <v-chip class="uppercase" color="primary"> {{ item?.from?.name }} </v-chip>
                         </div>
                     </template>
-                    <template v-slot:item.phone="{ value }">
+                    <template v-slot:item.to="{ item }">
                         <div>
-                            <template v-if="value">
-                                <v-chip> {{ value?.phone }} </v-chip>
-                            </template>
-                            <template v-else>
-                                <v-chip color="info"> - </v-chip>
-                            </template>
+                            <v-chip class="uppercase" color="error"> {{ item?.to?.name }} </v-chip>
                         </div>
                     </template>
+
+                    <template v-slot:item.fee="{ item }">
+                        <div>
+                            <v-chip class="uppercase"> {{ item?.fee }} % </v-chip>
+                        </div>
+                    </template>
+
+                    <template v-slot:item.is_common_display="{ item }">
+                        <div>
+                            <template v-if="item?.is_common_display">
+                                <v-chip class="uppercase" color="success">Yes </v-chip>
+                            </template>
+                            <template v-else>
+                                <v-chip class="uppercase" color="warning">No </v-chip>
+                            </template>
+
+                        </div>
+                    </template>
+
                     <template v-slot:item.status="{ item }">
                         <div>
                             <template v-if="item?.status == 'active'">
                                 <v-chip color="success"> Active </v-chip>
                             </template>
                             <template v-if="item?.status == 'inactive'">
-                                <v-chip color="warning"> InActive </v-chip>
+                                <v-chip color="error"> InActive </v-chip>
                             </template>
-                            <template v-if="item?.status == 'ban'">
-                                <v-chip color="error"> Ban </v-chip>
+                            <template v-if="item?.status == 'pending'">
+                                <v-chip color="warning"> Pending </v-chip>
                             </template>
                         </div>
                     </template>
@@ -63,7 +72,7 @@
                             <v-menu activator="parent">
                                 <v-list>
                                     <v-list-item :link="true"
-                                        :to="{ name: 'management-users-edit', params: { id: item?.id } }" value="action"
+                                        :to="{ name: 'management-pairs-edit', params: { id: item?.id } }" value="action"
                                         hide-details min-height="38">
                                         <v-list-item-title>
                                             <v-avatar size="20" class="mr-2">
@@ -138,7 +147,7 @@ import { useAuthStore } from '@/stores/auth';
 const authStore = useAuthStore();
 
 
-const page = ref({ title: 'Users' });
+const page = ref({ title: 'Asset Pairs' });
 const breadcrumbs = ref([
     {
         text: 'Dashboard',
@@ -146,7 +155,7 @@ const breadcrumbs = ref([
         href: '#'
     },
     {
-        text: 'Users',
+        text: 'Asset Pair',
         disabled: true,
         href: '#'
     }
@@ -160,12 +169,12 @@ const snackbar_text = ref(null);
 const dialogDelete = ref(false);
 
 const headers = ref([
-    { title: 'Username', key: 'username' },
-    { title: 'Email', key: 'email' },
-    { title: 'phone', key: 'phone' },
-    { title: 'Role', key: 'role' },
+    { title: 'Asset From', key: 'from' },
+    { title: 'Asset To', key: 'to' },
+    { title: 'Fee', key: 'fee' },
     { title: 'Status', key: 'status' },
-    { title: 'Actions', key: 'actions' }
+    { title: 'Common Display', key: 'is_common_display' },
+    { title: 'Actions', key: 'actions' },
 ]);
 const tableData = ref([]);
 
@@ -173,7 +182,6 @@ const pager = ref({});
 const current_page = ref(1);
 const search = ref('');
 const route = useRoute();
-const is_visible_create = ref(false);
 const table_loading = ref(true);
 const fetchData = async () => {
     try {
@@ -181,10 +189,10 @@ const fetchData = async () => {
             page: current_page.value,
             q: search.value
         };
-        const { data } = await ApiService.query(`management/users`, {
+        const { data } = await ApiService.query(`management/asset/pairs`, {
             params: params
         });
-        tableData.value = data.data.users;
+        tableData.value = data.data.pairs;
         pager.value = data.data.pager;
         table_loading.value = false;
     } catch (error) { }
@@ -210,7 +218,7 @@ const deleteItem = (item: any) => {
 };
 const deleteItemConfirm = async () => {
     try {
-        const { data } = await ApiService.delete(`management/users/${editedItem.value.id}`);
+        const { data } = await ApiService.delete(`management/asset/pairs/${editedItem.value.id}`);
         if (data.status == "200") {
             tableData.value.splice(editedIndex.value, 1);
             closeDelete();
