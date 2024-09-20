@@ -1,5 +1,5 @@
 const MainRoutes = {
-    path: '/main',
+    path: '/profile',
     meta: {
         requiresAuth: true
     },
@@ -8,8 +8,14 @@ const MainRoutes = {
     children: [
         {
             name: 'user-dashboard',
-            path: '/dashboards/dashboard',
-            component: () => import('@/views/dashboards/dashboard1/index.vue')
+            path: 'dashboard',
+            component: () => import('@/views/profile/dashboard.vue')
+        },
+
+        {
+            name: 'user-asset-detail',
+            path: 'assets/:id',
+            component: () => import('@/views/profile/assets/detail.vue')
         },
 
     ]

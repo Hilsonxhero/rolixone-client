@@ -5,11 +5,7 @@ const AuthRoutes = {
         requiresAuth: false
     },
     children: [
-        {
-            name: 'Landing Page',
-            path: '/',
-            component: () => import('@/views/pages/landingpage/index.vue')
-        },
+
         {
             name: 'auth-login',
             path: '/auth/login',

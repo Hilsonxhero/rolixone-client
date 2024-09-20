@@ -3,7 +3,7 @@ const MainRoutes = {
     meta: {
         requiresAuth: true
     },
-    component: () => import('@/layouts/full/FullLayout.vue'),
+    component: () => import('@/layouts/management/FullLayout.vue'),
     children: [
         {
             name: 'management-dashboard',

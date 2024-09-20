@@ -220,8 +220,13 @@ onMounted(async () => {
 
 
                                 <div class="col-span-12">
-                                    <v-btn type="submit" :loading="loader" class="submit-btn mt-2" flat
-                                        color="primary">Save</v-btn>
+                                    <div class="flex items-center">
+                                        <v-btn type="submit" :loading="loader" class="submit-btn " variant="tonal"
+                                            color="primary">Save</v-btn>
+                                        <v-btn class="ml-2" :to="{ name: 'management-pairs-index' }" variant="tonal"
+                                            color="error">
+                                            cancel </v-btn>
+                                    </div>
                                 </div>
                             </div>
                         </Form>

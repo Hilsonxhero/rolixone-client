@@ -27,7 +27,7 @@ const sidebarItem: menu[] = [
             {
                 title: 'Dashboard',
                 icon: 'widget-add-line-duotone',
-                to: '/management/dashboard'
+                to: '/profile/dashboard'
             },
             // {
             //     title: 'Dashboard2',
@@ -42,51 +42,51 @@ const sidebarItem: menu[] = [
         ]
     },
 
-    {
-        header: 'apps',
-        id: 1,
-        children: [
+    // {
+    //     header: 'apps',
+    //     id: 1,
+    //     children: [
 
-            {
-                title: 'Users',
-                icon: 'shield-user-line-duotone',
-                to: '/',
-                children: [
-                    {
-                        title: 'Users List',
-                        to: '/management/users'
-                    },
+    //         {
+    //             title: 'Users',
+    //             icon: 'shield-user-line-duotone',
+    //             to: '/',
+    //             children: [
+    //                 {
+    //                     title: 'Users List',
+    //                     to: '/management/users'
+    //                 },
 
-                ]
-            },
+    //             ]
+    //         },
 
-        ]
-    },
+    //     ]
+    // },
 
 
-    {
-        header: 'assets',
-        id: 1,
-        children: [
+    // {
+    //     header: 'assets',
+    //     id: 1,
+    //     children: [
 
-            {
-                title: 'Assets',
-                icon: 'wallet-2-linear',
-                to: '/',
-                children: [
-                    {
-                        title: 'Assets List',
-                        to: '/management/assets'
-                    },
-                    {
-                        title: 'Assets Pairs',
-                        to: '/management/asset/pairs'
-                    },
-                ]
-            },
+    //         {
+    //             title: 'Assets',
+    //             icon: 'wallet-2-linear',
+    //             to: '/',
+    //             children: [
+    //                 {
+    //                     title: 'Assets List',
+    //                     to: '/management/assets'
+    //                 },
+    //                 {
+    //                     title: 'Assets Pairs',
+    //                     to: '/management/asset/pairs'
+    //                 },
+    //             ]
+    //         },
 
-        ]
-    },
+    //     ]
+    // },
 
 
 ];

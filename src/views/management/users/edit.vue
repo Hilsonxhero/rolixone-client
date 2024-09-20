@@ -87,6 +87,7 @@ const handleSubmit = async () => {
     try {
         loader.value = true;
         const formData = {
+            _method: "PUT",
             id: route.params.id,
             username: form.value.username,
             status: form.value.status,
