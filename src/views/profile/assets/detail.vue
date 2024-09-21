@@ -27,8 +27,11 @@ import { WalletIcon, CreditCardIcon } from 'vue-tabler-icons';
 import { useRoute } from 'vue-router';
 import ApiService from '@/services/ApiService';
 import { Form, Field, ErrorMessage } from 'vee-validate';
+import { router } from '@/router';
 
 const loading = ref(false);
+
+const loader = ref(false);
 
 const tab = ref(null);
 
@@ -48,8 +51,6 @@ const fetchData = async () => {
     try {
         const { data } = await ApiService.get(`application/profile/assets/${route.params.id}`);
 
-        console.log("data", data);
-
         asset.value = data.data;
 
         loading.value = false;
@@ -62,8 +63,20 @@ const showDeposit = () => {
     visible_deposit.value = true
 }
 
-const handleDeposit = () => {
-    visible_deposit.value = false
+const handleDeposit = async () => {
+    loader.value = true
+    try {
+        const form_data = {
+            amount: form.value.amount
+        }
+        const { data } = await ApiService.post(`application/profile/assets/deposit/${route.params.id}`, form_data);
+
+        console.log("data", data);
+
+        router.push({ name: 'user-orders-detail', params: { id: data.data.id } })
+
+        loading.value = false;
+    } catch (error) { }
 }
 
 const form = ref({
@@ -88,7 +101,7 @@ onMounted(() => {
                         <v-row class="">
                             <v-col cols="4" class="text-center flex flex-col  items-center">
                                 <WalletIcon size="20" />
-                                <h4 class="text-h4">938</h4>
+                                <h4 class="text-h4">{{ asset?.balance }}</h4>
                                 <h6 class="text-h6 font-weight-regular">balance</h6>
                             </v-col>
 
@@ -185,8 +198,8 @@ onMounted(() => {
                     <v-card-actions class="my-2 d-flex justify-end">
                         <v-btn class="text-none" rounded="xl" text="Cancel" @click="visible_deposit = false"></v-btn>
 
-                        <v-btn type="submit" class="text-none" color="primary" rounded="xl" text="Continue"
-                            variant="flat"></v-btn>
+                        <v-btn :loading="loader" type="submit" class="text-none" color="primary" rounded="xl"
+                            text="Continue" variant="flat"></v-btn>
                     </v-card-actions>
 
                 </Form>

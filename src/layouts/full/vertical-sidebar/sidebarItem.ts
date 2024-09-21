@@ -29,6 +29,11 @@ const sidebarItem: menu[] = [
                 icon: 'widget-add-line-duotone',
                 to: '/profile/dashboard'
             },
+            {
+                title: 'Orders',
+                icon: 'card-linear',
+                to: '/profile/orders'
+            },
             // {
             //     title: 'Dashboard2',
             //     icon: 'chart-line-duotone',

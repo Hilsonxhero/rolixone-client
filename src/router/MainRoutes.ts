@@ -18,6 +18,18 @@ const MainRoutes = {
             component: () => import('@/views/profile/assets/detail.vue')
         },
 
+        {
+            name: 'user-orders-index',
+            path: 'orders',
+            component: () => import('@/views/profile/orders/index.vue')
+        },
+
+        {
+            name: 'user-orders-detail',
+            path: 'orders/:id',
+            component: () => import('@/views/profile/orders/detail.vue')
+        },
+
     ]
 };
 
