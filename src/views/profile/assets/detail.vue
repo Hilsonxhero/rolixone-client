@@ -26,7 +26,7 @@ const breadcrumbs = ref([
 import { WalletIcon, CreditCardIcon } from 'vue-tabler-icons';
 import { useRoute } from 'vue-router';
 import ApiService from '@/services/ApiService';
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage, useField } from 'vee-validate';
 import { router } from '@/router';
 
 const loading = ref(false);
@@ -38,6 +38,8 @@ const tab = ref(null);
 const asset = ref({});
 
 const visible_deposit = ref(false)
+
+const formRef = ref(null)
 
 const items = shallowRef([
     { tab: 'Transaction', icon: CreditCardIcon, href: '/apps/user/profile' },
@@ -80,12 +82,53 @@ const handleDeposit = async () => {
 }
 
 const form = ref({
-    amount: ""
+    amount: "",
+    selected_asset: null
+})
+
+const step = ref("1")
+const step_disabled = ref(true)
+const nextStep = () => {
+    console.log("nextStep", nextStep);
+
+    formRef.value.validate((valid) => {
+        console.log("valid", valid);
+        return valid
+    })
+}
+
+const assets = ref([])
+const current_page = ref(1);
+const assetsearchTerm = ref('')
+
+
+watch(() => form.value.amount, async (val) => {
+    // nextStep()
+    if (val !== "" && val >= 5) {
+        step_disabled.value = false
+    } else {
+        step_disabled.value = true
+    }
 })
 
 
-onMounted(() => {
-    fetchData()
+const fetchAssets = async () => {
+    try {
+        let params = {
+            page: current_page.value,
+            q: assetsearchTerm.value
+        };
+        const { data } = await ApiService.query(`application/asset/select`, {
+            params: params
+        });
+        assets.value = data.data;
+    } catch (error) { }
+};
+
+
+onMounted(async () => {
+    await fetchData()
+    await fetchAssets()
 })
 
 </script>
@@ -129,7 +172,7 @@ onMounted(() => {
                             <BrandYoutubeIcon size="16" />
                         </v-btn> -->
                         <v-btn variant="flat" color="success" @click="showDeposit">Deposit</v-btn>
-                        <v-btn variant="flat" color="primary">withdrawal</v-btn>
+                        <!-- <v-btn variant="flat" color="primary">withdrawal</v-btn> -->
                     </div>
                 </v-col>
                 <v-col md="12" class="order-sm-last">
@@ -158,52 +201,82 @@ onMounted(() => {
 
                 <v-divider class="mb-4"></v-divider>
 
-                <Form @submit="handleDeposit" ref="formRef">
+                <v-stepper alt-labels v-model="step">
+                    <template v-slot:default="{ prev, next }">
+                        <v-stepper-header>
+                            <v-stepper-item value="1">
+                                <template v-slot:title>
+                                    Choose amount
+                                </template>
+                            </v-stepper-item>
 
-                    <v-card-text>
-                        <div class="text-medium-emphasis mb-8">
-                            Deposit guide text.
-                        </div>
+                            <v-divider></v-divider>
+
+                            <v-stepper-item value="2">
+                                <template v-slot:title>
+                                    Choose asset
+                                </template>
+                            </v-stepper-item>
+
+                            <v-divider></v-divider>
+
+                            <v-stepper-item value="3">
+                                <template v-slot:title>
+                                    Send Deposit
+                                </template>
+
+
+                            </v-stepper-item>
 
 
 
-                        <div class="grid grid-cols-12 gap-3">
-                            <div class="col-span-12">
-                                <Field mode="passive" name="amount" v-slot="{ field }" rules="required"
-                                    label="  Amount">
-                                    <v-text-field type="number" v-bind="field" v-model="form.amount" label=" Amount "
+                        </v-stepper-header>
+                        <v-stepper-window>
+                            <v-stepper-window-item key="1-content" value="1">
+
+
+                                <!-- <div class="text-medium-emphasis mb-8">
+                                            Deposit guide text.
+                                        </div> -->
+                                <div class="mt-4">
+                                    <v-text-field type="number" v-model="form.amount" label=" Amount "
                                         variant="outlined" hide-details="auto"></v-text-field>
-                                </Field>
-                                <div class="invalid-feedback d-block">
-                                    <ErrorMessage name="amount" />
                                 </div>
-                            </div>
-                        </div>
 
 
-                        <!-- <div class="text-overline mb-2">💎 PREMIUM</div>
+                            </v-stepper-window-item>
+                            <v-stepper-window-item key="2-content" value="2">
+                                <div class="mt-4 mb-10">
+                                    <v-select hide-details="auto" label="Asset From" :items="assets" item-title="name"
+                                        return-object item-value="id" v-model="form.selected_asset">
+                                        <template v-slot:prepend-item>
+                                            <v-list-item>
+                                                <v-list-item-content>
+                                                    <v-text-field v-model="assetsearchTerm"
+                                                        placeholder="Search"></v-text-field>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                            <v-divider class="mt-2"></v-divider>
+                                        </template>
+                                        <template v-slot:item="{ props, item }">
+                                            <v-list-item v-bind="props"></v-list-item>
+                                        </template>
+                                    </v-select>
+                                </div>
 
-                        <div class="text-medium-emphasis mb-1">
-                            Share with unlimited people and get more insights about your network. Try Premium Free for
-                            30
-                            days.
-                        </div>
+                            </v-stepper-window-item>
+                            <v-stepper-window-item key="3-content" value="3">
+                                <h1>step 3</h1>
+                            </v-stepper-window-item>
+                        </v-stepper-window>
+                        <v-stepper-actions :disabled="step_disabled" @click:next="next"
+                            @click:prev="prev"></v-stepper-actions>
+                    </template>
 
-                        <v-btn class="text-none font-weight-bold ms-n4" color="primary" text="Retry Premium Free"
-                            variant="text"></v-btn> -->
-                    </v-card-text>
 
-                    <v-divider class="mt-2"></v-divider>
-
-                    <v-card-actions class="my-2 d-flex justify-end">
-                        <v-btn class="text-none" rounded="xl" text="Cancel" @click="visible_deposit = false"></v-btn>
-
-                        <v-btn :loading="loader" type="submit" class="text-none" color="primary" rounded="xl"
-                            text="Continue" variant="flat"></v-btn>
-                    </v-card-actions>
-
-                </Form>
+                </v-stepper>
             </v-card>
         </template>
+
     </v-dialog>
 </template>
